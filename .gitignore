@@ -1,0 +1,6 @@
+# Large layout used for local testing (exceeds GitHub's 100 MB file limit)
+SiSW_Polito_final_Flipped.gds
+
+# Python
+__pycache__/
+*.py[cod]
