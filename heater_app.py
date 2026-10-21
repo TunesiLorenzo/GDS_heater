@@ -17,6 +17,7 @@ right- or middle-drag always pans.
 import csv
 import json
 import logging
+import math
 import os
 import queue
 import sys
@@ -74,6 +75,7 @@ class App:
         except tk.TclError:
             pass
         self.lib = None
+        self.gds_path = None
         self.tops = []
         self.layers = {}            # (layer, datatype) -> [arrays]
         self.geoms = {}             # (layer, datatype) -> layout_render.LayerGeom
@@ -228,8 +230,8 @@ class App:
         ttk.Button(top, text="Delete", width=6, command=self._dev_delete).pack(side=tk.LEFT)
         io = ttk.Frame(f)
         io.pack(fill=tk.X, padx=4, pady=(0, 4))
-        ttk.Button(io, text="Save devices…", command=self.save_devices).pack(side=tk.LEFT)
-        ttk.Button(io, text="Load devices…", command=self.load_devices).pack(side=tk.LEFT, padx=4)
+        ttk.Button(io, text="Save setup…", command=self.save_setup).pack(side=tk.LEFT)
+        ttk.Button(io, text="Load setup…", command=self.load_setup).pack(side=tk.LEFT, padx=4)
         dw = ttk.Frame(f)
         dw.pack(fill=tk.BOTH, expand=True, padx=4)
         self.dev_tree = ttk.Treeview(dw, columns=("name", "plus", "minus"), show="headings",
@@ -321,7 +323,8 @@ class App:
         try:
             self.lib, self.tops = hc.load_gds(path)
         except Exception as e:
-            messagebox.showerror("Could not read GDS", str(e)); return
+            messagebox.showerror("Could not read GDS", str(e)); return False
+        self.gds_path = os.path.abspath(path)
         self.file_var.set(os.path.basename(path))
         self.devices = []
         self.region = None
@@ -330,6 +333,7 @@ class App:
         self.cell_cb["values"] = names
         self.cell_var.set(names[0])
         self.load_cell(names[0])
+        return True
 
     def load_cell(self, name):
         cell = next(c for c in self.tops if c.name == name)
@@ -1037,50 +1041,116 @@ class App:
             w.writerows(rows)
         self.table_info.set(f"Saved {os.path.basename(path)}")
 
-    def save_devices(self):
-        if not self.devices:
-            messagebox.showinfo("Save devices", "There are no devices to save."); return
-        path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("Device set", "*.json")],
-                                            initialfile=os.path.splitext(self.file_var.get())[0] + "_devices.json")
+    def save_setup(self):
+        if not self.gds_path:
+            messagebox.showinfo("Save setup", "Open a GDS file first."); return
+        path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("Setup", "*.json")],
+                                            initialfile=os.path.splitext(self.file_var.get())[0] + "_setup.json")
         if not path:
             return
-        data = {"gds_file": self.file_var.get(), "cell": self.cell_var.get(), "pad_size": self.pad_var.get(),
-                "region": self.region,
-                "layer_roles": {f"{k[0]}/{k[1]}": v.get() for k, v in self.role_vars.items() if v.get() != "-"},
-                "parameters": {k: v.get() for k, v in self.params.items()},
-                "devices": [{"name": d["name"], "plus": d["plus"], "minus": d["minus"]} for d in self.devices]}
-        with open(path, "w", encoding="utf-8") as fh:
-            json.dump(data, fh, indent=2)
-        self.status.set(f"Saved {len(self.devices)} devices to {os.path.basename(path)}")
+        try:
+            # A relative path lets the GDS and setup JSON move together.
+            try:
+                gds_file = os.path.relpath(self.gds_path, os.path.dirname(os.path.abspath(path)))
+            except ValueError:  # Windows paths on different drives
+                gds_file = self.gds_path
+            data = {"format_version": 1, "gds_file": gds_file, "cell": self.cell_var.get(),
+                    "pad_size": self.pad_var.get(), "region": self.region,
+                    "layer_roles": {f"{k[0]}/{k[1]}": v.get() for k, v in self.role_vars.items()},
+                    "layer_visibility": {f"{k[0]}/{k[1]}": v.get() for k, v in self.vis_vars.items()},
+                    "parameters": {k: v.get() for k, v in self.params.items()},
+                    "devices": [{"name": d["name"], "plus": d["plus"], "minus": d["minus"]}
+                                for d in self.devices]}
+            with open(path, "w", encoding="utf-8") as fh:
+                json.dump(data, fh, indent=2)
+        except (OSError, TypeError, ValueError) as e:
+            messagebox.showerror("Save setup", str(e)); return
+        self.status.set(f"Saved setup to {os.path.basename(path)}")
 
-    def load_devices(self):
-        path = filedialog.askopenfilename(filetypes=[("Device set", "*.json"), ("All", "*.*")])
+    @staticmethod
+    def _read_box(value):
+        if value is None:
+            return None
+        if not isinstance(value, (list, tuple)) or len(value) != 4:
+            raise ValueError("A pad or region must have four coordinates.")
+        box = tuple(float(x) for x in value)
+        if not all(math.isfinite(x) for x in box) or box[0] >= box[2] or box[1] >= box[3]:
+            raise ValueError("A pad or region has invalid coordinates.")
+        return box
+
+    def load_setup(self):
+        path = filedialog.askopenfilename(filetypes=[("Setup", "*.json"), ("All", "*.*")])
         if not path:
             return
         try:
             with open(path, encoding="utf-8") as fh:
                 data = json.load(fh)
-            devs = [{"name": str(d["name"]),
-                     "plus": tuple(d["plus"]) if d.get("plus") else None,
-                     "minus": tuple(d["minus"]) if d.get("minus") else None} for d in data["devices"]]
-        except Exception as e:
-            messagebox.showerror("Load devices", f"Could not read {os.path.basename(path)}: {e}"); return
+            if not isinstance(data, dict) or not isinstance(data.get("devices"), list):
+                raise ValueError("This is not a device setup file.")
+            devs = [{"name": str(d["name"]).strip(), "plus": self._read_box(d.get("plus")),
+                     "minus": self._read_box(d.get("minus"))} for d in data["devices"]]
+            names = [d["name"] for d in devs]
+            if any(not name for name in names) or len(names) != len(set(names)):
+                raise ValueError("Device names must be nonempty and unique.")
+            region = self._read_box(data.get("region"))
+            roles = {tuple(int(x) for x in spec.split("/")): role
+                     for spec, role in data.get("layer_roles", {}).items()}
+            if any(len(k) != 2 or role not in ROLES for k, role in roles.items()):
+                raise ValueError("Invalid layer role in setup file.")
+            visibility = {tuple(int(x) for x in spec.split("/")): visible
+                          for spec, visible in data.get("layer_visibility", {}).items()}
+            if any(len(k) != 2 or not isinstance(visible, bool) for k, visible in visibility.items()):
+                raise ValueError("Invalid layer visibility in setup file.")
+            parameters = data.get("parameters", {})
+            if not isinstance(parameters, dict):
+                raise ValueError("Invalid parameters in setup file.")
+            gds_name = data.get("gds_file", "")
+            if not isinstance(gds_name, str):
+                raise ValueError("Invalid GDS path in setup file.")
+            gds_path = os.path.abspath(os.path.join(os.path.dirname(path), gds_name)) if gds_name else None
+            if (gds_path and not os.path.isfile(gds_path) and not data.get("format_version")
+                    and self.gds_path and os.path.basename(gds_name) == os.path.basename(self.gds_path)):
+                gds_path = self.gds_path  # legacy JSON contained only the basename
+            if not gds_path or not os.path.isfile(gds_path):
+                gds_path = filedialog.askopenfilename(title="Locate the GDS for this setup",
+                                                      filetypes=[("GDSII", "*.gds *.gds2 *.gdsii *.GDS"), ("All", "*.*")])
+                if not gds_path:
+                    return
+            cell = data.get("cell")
+            if cell and (not self.gds_path or os.path.normcase(gds_path) != os.path.normcase(self.gds_path)
+                         or not self.tops or all(c.name != cell for c in self.tops)):
+                _, tops = hc.load_gds(gds_path)
+                if all(c.name != cell for c in tops):
+                    raise ValueError(f"Top cell '{cell}' is not in {os.path.basename(gds_path)}.")
+        except (OSError, ValueError, TypeError, KeyError) as e:
+            messagebox.showerror("Load setup", f"Could not read {os.path.basename(path)}: {e}"); return
+
+        if not self.gds_path or os.path.normcase(os.path.abspath(gds_path)) != os.path.normcase(self.gds_path):
+            if not self.open_file(gds_path):
+                return
+        if cell and cell != self.cell_var.get():
+            self.cell_var.set(cell)
+            self.load_cell(cell)
         self.devices = devs
-        self.region = tuple(data["region"]) if data.get("region") else None
-        self.pad_var.set(data.get("pad_size", ""))
-        for k, v in data.get("parameters", {}).items():
+        self.region = region
+        self.pad_var.set(str(data.get("pad_size", "")))
+        for k, v in parameters.items():
             if k in self.params:
-                self.params[k].set(v)
-        for spec, role in data.get("layer_roles", {}).items():
-            key = tuple(int(x) for x in spec.split("/"))
-            if key in self.role_vars and role in ROLES:
-                self.role_vars[key].set(role)
-        self._schedule_render(force=True)
+                self.params[k].set(str(v))
+        for key, var in self.role_vars.items():
+            var.set(roles.get(key, "-"))
+        for key, var in self.vis_vars.items():
+            var.set(visibility.get(key, True))
         self.results = {}
+        self.result = None
+        self.ov_var.set("Layout")
+        self.show_overlay()
         self._refresh_dev_tree(select=devs[0]["name"] if devs else None)
         self._draw_region()
         self._refresh_table()
-        self.status.set(f"Loaded {len(devs)} devices from {os.path.basename(path)}")
+        self._show_results(None)
+        self._schedule_render(force=True)
+        self.status.set(f"Loaded setup from {os.path.basename(path)}")
 
     def _show_results(self, r, name=None, error=None):
         self.res_dev_var.set(name or "No device selected")
