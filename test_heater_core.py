@@ -92,3 +92,51 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+def test_graded():
+    """Graded grid must match a fine uniform grid while using far fewer cells."""
+    ok = True
+    import make_example_gds
+    lib, tops = hc.load_gds(make_example_gds.build("example_heater.gds"))
+    L = hc.flatten_cell(tops[0])
+    heater, routing, via = L[(10, 0)], L[(20, 0)], L[(30, 0)]
+    region = hc.polys_bbox(heater + routing)
+    plus, minus = (-160, -40, -80, 40), (200, 8, 280, 88)
+
+    def solve(g):
+        return hc.solve(g, hc.rasterize(heater, g), hc.rasterize(routing, g), hc.rasterize(via, g),
+                        10.0, 0.05, plus, minus, 1.0, 0.1, 0.5)
+
+    hf, hcz = hc.auto_grid_sizes(heater, routing, region)
+    gu = hc.Grid.from_bbox(region, hf)
+    gg = hc.graded_grid(region, heater, routing + via, hf, hcz)
+    ru, rg = solve(gu), solve(gg)
+    print(f"[info] auto sizes: fine {hf} um, coarse {hcz} um; uniform {gu.nx}x{gu.ny}={gu.nx*gu.ny:,} cells, "
+          f"graded {gg.nx}x{gg.ny}={gg.nx*gg.ny:,} cells")
+    ok &= check("graded vs uniform: R total", rg.R, ru.R, 0.002)
+    ok &= check("graded vs uniform: R routing", rg.R_routing, ru.R_routing, 0.05)
+    ok &= check("graded vs uniform: J median", rg.stats["J_heater_median"], ru.stats["J_heater_median"], 0.005)
+
+    # Small heater, pads 3 mm apart: routing alone is analytic (Manhattan, snapped grid)
+    w, Lh = 2.0, 50.0
+    heater2 = [rect(0, 0, Lh, w)]
+    routing2 = [rect(-1500, -40, -1420, 40), rect(-1500, -2.5, 3, 4.5),      # pad + 7 um trace
+                rect(Lh - 3, -2.5, 1550, 4.5), rect(1470, -40, 1550, 40)]
+    region2 = hc.polys_bbox(heater2 + routing2)
+    hf2, hc2 = hc.auto_grid_sizes(heater2, routing2, region2)
+    g2 = hc.graded_grid(region2, heater2, routing2, hf2, hc2)
+    r2 = hc.solve(g2, hc.rasterize(heater2, g2), hc.rasterize(routing2, g2), None, 10.0, 0.05,
+                  (-1500, -40, -1420, 40), (1470, -40, 1550, 40), 1.0, 0.1)
+    full = int(np.ceil((region2[2] - region2[0]) / hf2) * np.ceil((region2[3] - region2[1]) / hf2))
+    print(f"[info] far pads: fine {hf2} coarse {hc2}; graded {g2.nx}x{g2.ny}={g2.nx*g2.ny:,} cells "
+          f"vs {full:,} uniform")
+    # heater between the routing edges: (Lh - 6)/w squares + overlap spreading; routing 2 traces
+    ok &= check("far pads: heater R ~ 10*(44/2)", r2.R_heater, 10 * 44 / 2, 0.03)
+    ok &= check("far pads: routing R ~ 0.05*2*1420/7", r2.R_routing, 0.05 * 2 * 1420 / 7, 0.03)
+    return ok
+
+
+if __name__ == "__main__":
+    print("\n--- graded grid")
+    print("GRADED PASS" if test_graded() else "GRADED FAILED")
