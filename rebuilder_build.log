@@ -1,0 +1,134 @@
+189 INFO: PyInstaller: 6.22.3, contrib hooks: 2026.7
+189 INFO: Python: 3.13.13
+217 INFO: Platform: Windows-11-10.0.26200-SP0
+217 INFO: Python environment: C:\Users\lorenzo\AppData\Local\Programs\Python\Python313
+218 INFO: wrote C:\Users\lorenzo\Desktop\Python\GDS_heater\HeaterResistance.spec
+220 INFO: Removing temporary files and cleaning cache in C:\Users\lorenzo\AppData\Local\pyinstaller
+253 INFO: Module search paths (PYTHONPATH):
+['C:\\Users\\lorenzo\\Desktop\\Python\\GDS_heater',
+ 'C:\\Users\\lorenzo\\AppData\\Local\\Programs\\Python\\Python313\\python313.zip',
+ 'C:\\Users\\lorenzo\\AppData\\Local\\Programs\\Python\\Python313\\DLLs',
+ 'C:\\Users\\lorenzo\\AppData\\Local\\Programs\\Python\\Python313\\Lib',
+ 'C:\\Users\\lorenzo\\AppData\\Local\\Programs\\Python\\Python313',
+ 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages',
+ 'C:\\Users\\lorenzo\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages',
+ 'C:\\Users\\lorenzo\\Desktop\\Python\\GDS_heater']
+705 INFO: Appending 'datas' from .spec
+705 INFO: checking Analysis
+705 INFO: Building Analysis because Analysis-00.toc is non existent
+705 INFO: Looking for Python shared library...
+705 INFO: Using Python shared library: C:\Users\lorenzo\AppData\Local\Programs\Python\Python313\python313.dll
+705 INFO: Running Analysis Analysis-00.toc
+705 INFO: Target bytecode optimization level: 0
+705 INFO: Initializing module dependency graph...
+706 INFO: Initializing module graph hook caches...
+721 INFO: Analyzing modules for base_library.zip ...
+2269 INFO: Processing standard module hook 'hook-encodings.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+2755 INFO: Processing standard module hook 'hook-math.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+4267 INFO: Processing standard module hook 'hook-pickle.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+5378 INFO: Processing standard module hook 'hook-heapq.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+5891 INFO: Caching module dependency graph...
+5932 INFO: Analyzing C:\Users\lorenzo\Desktop\Python\GDS_heater\heater_app.py
+6048 INFO: Processing pre-find-module-path hook 'hook-tkinter.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\pre_find_module_path'
+6051 INFO: TclTkInfo: initializing cached Tcl/Tk info...
+6417 INFO: Processing standard module hook 'hook-_tkinter.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+6532 INFO: Processing standard module hook 'hook-numpy.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+6909 INFO: Processing pre-safe-import-module hook 'hook-typing_extensions.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+6911 INFO: SetuptoolsInfo: initializing cached setuptools info...
+7908 INFO: Processing standard module hook 'hook-multiprocessing.util.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+8111 INFO: Processing standard module hook 'hook-xml.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+8435 INFO: Processing standard module hook 'hook-sysconfig.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+8441 INFO: Processing standard module hook 'hook-_ctypes.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+9246 INFO: Processing standard module hook 'hook-platform.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+9612 INFO: Processing standard module hook 'hook-webbrowser.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+11151 INFO: Processing standard module hook 'hook-difflib.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+11793 INFO: Processing standard module hook 'hook-psutil.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+12311 INFO: Processing standard module hook 'hook-charset_normalizer.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+12766 INFO: Processing standard module hook 'hook-matplotlib.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+13245 INFO: Processing pre-safe-import-module hook 'hook-packaging.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+13766 INFO: Processing standard module hook 'hook-matplotlib.backend_bases.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+13993 INFO: Processing standard module hook 'hook-PIL.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+14146 INFO: Processing standard module hook 'hook-PIL.Image.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+14646 INFO: Processing standard module hook 'hook-xml.etree.cElementTree.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+14922 INFO: Processing standard module hook 'hook-PIL.ImageFilter.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+16181 INFO: Processing standard module hook 'hook-matplotlib.backends.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+16330 INFO: Processing standard module hook 'hook-matplotlib.pyplot.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+16539 INFO: Processing standard module hook 'hook-matplotlib.figure.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+17590 INFO: Processing standard module hook 'hook-dateutil.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+17737 INFO: Processing pre-safe-import-module hook 'hook-six.moves.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+20197 INFO: Processing pre-safe-import-module hook 'hook-gi.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+20202 INFO: Processing standard module hook 'hook-certifi.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+20345 INFO: Processing standard module hook 'hook-scipy.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+21542 INFO: Processing standard module hook 'hook-pycparser.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+21781 INFO: Processing standard module hook 'hook-setuptools.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+21799 INFO: Processing pre-safe-import-module hook 'hook-distutils.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+21852 INFO: Processing pre-safe-import-module hook 'hook-jaraco.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+21854 INFO: Setuptools: 'jaraco' appears to be a full setuptools-vendored copy - creating alias to 'setuptools._vendor.jaraco'!
+21870 INFO: Processing pre-safe-import-module hook 'hook-more_itertools.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+21871 INFO: Setuptools: 'more_itertools' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.more_itertools'!
+22096 INFO: Processing standard module hook 'hook-_osx_support.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+22488 INFO: Processing standard module hook 'hook-setuptools._vendor.jaraco.text.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+22491 INFO: Processing pre-safe-import-module hook 'hook-importlib_resources.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+22503 INFO: Processing pre-safe-import-module hook 'hook-backports.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+22504 INFO: Setuptools: 'backports' appears to be a full setuptools-vendored copy - creating alias to 'setuptools._vendor.backports'!
+23276 INFO: Processing pre-safe-import-module hook 'hook-tomli.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+23277 INFO: Setuptools: 'tomli' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.tomli'!
+24006 INFO: Processing pre-safe-import-module hook 'hook-wheel.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\pre_safe_import_module'
+24008 INFO: Setuptools: 'wheel' appears to be a setuptools-vendored copy - creating alias to 'setuptools._vendor.wheel'!
+25663 INFO: Processing standard module hook 'hook-scipy.linalg.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+25833 INFO: Processing standard module hook 'hook-scipy.special._ufuncs.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+27665 INFO: Processing standard module hook 'hook-scipy.spatial._ckdtree.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+28461 INFO: Processing standard module hook 'hook-scipy.spatial.transform.rotation.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+29870 INFO: Processing standard module hook 'hook-scipy.stats._stats.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+30643 INFO: Processing standard module hook 'hook-scipy.sparse.csgraph.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+31894 INFO: Processing standard module hook 'hook-scipy.special._ellip_harm_2.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+32751 INFO: Processing module hooks (post-graph stage)...
+32760 WARNING: Hidden import "pycparser.lextab" not found!
+32760 WARNING: Hidden import "pycparser.yacctab" not found!
+32771 INFO: Processing standard module hook 'hook-matplotlib.backends.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+32773 INFO: Matplotlib backend selection method: automatic discovery of used backends
+32811 INFO: Discovered Matplotlib backend(s) via `matplotlib.use()` call in module 'C:\\Users\\lorenzo\\Desktop\\Python\\GDS_heater\\heater_app.py': ['TkAgg']
+32817 INFO: The following Matplotlib backends were discovered by scanning for `matplotlib.use()` calls: ['TkAgg']. If your backend of choice is not in this list, either add a `matplotlib.use()` call to your code, or configure the backend collection via hook options (see: https://pyinstaller.org/en/stable/hooks-config.html#matplotlib-hooks).
+33292 INFO: Selected matplotlib backends: ['TkAgg']
+33292 INFO: Extra dists for selected matplotlib backends: []
+33688 INFO: Processing standard module hook 'hook-PIL.SpiderImagePlugin.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+33767 WARNING: Hidden import "scipy.special._cdflib" not found!
+33874 INFO: Processing standard module hook 'hook-_tkinter.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+33898 INFO: Performing binary vs. data reclassification (1139 entries)
+34016 INFO: Looking for ctypes DLLs
+34236 INFO: Analyzing run-time hooks ...
+34236 INFO: Including custom run-time hook 'C:/Users/lorenzo/Desktop/Python/AppCompiler/rebuilder_tk_icon_hook.py'
+34254 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\rthooks'
+34257 INFO: Including run-time hook 'pyi_rth_pkgutil.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\rthooks'
+34260 INFO: Including run-time hook 'pyi_rth_multiprocessing.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\rthooks'
+34263 INFO: Including run-time hook 'pyi_rth_setuptools.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\rthooks'
+34264 INFO: Including run-time hook 'pyi_rth_mplconfig.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\rthooks'
+34265 INFO: Processing pre-find-module-path hook 'hook-_pyi_rth_utils.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\pre_find_module_path'
+34268 INFO: Processing standard module hook 'hook-_pyi_rth_utils.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+34280 INFO: Including run-time hook 'pyi_rth__tkinter.py' from 'C:\\Users\\lorenzo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\rthooks'
+34337 INFO: Creating base_library.zip...
+34366 INFO: Looking for dynamic libraries
+36696 INFO: Extra DLL search directories (AddDllDirectory): ['C:\\Users\\lorenzo\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\numpy.libs', 'C:\\Users\\lorenzo\\AppData\\Local\\Programs\\Python\\Python313\\Lib\\site-packages\\scipy.libs']
+36697 INFO: Extra DLL search directories (PATH): []
+38024 INFO: Warnings written to C:\Users\lorenzo\Desktop\Python\GDS_heater\build\HeaterResistance\warn-HeaterResistance.txt
+38161 INFO: Graph cross-reference written to C:\Users\lorenzo\Desktop\Python\GDS_heater\build\HeaterResistance\xref-HeaterResistance.html
+38238 INFO: checking PYZ
+38238 INFO: Building PYZ because PYZ-00.toc is non existent
+38238 INFO: Building PYZ (ZlibArchive) C:\Users\lorenzo\Desktop\Python\GDS_heater\build\HeaterResistance\PYZ-00.pyz
+39855 INFO: Building PYZ (ZlibArchive) C:\Users\lorenzo\Desktop\Python\GDS_heater\build\HeaterResistance\PYZ-00.pyz completed successfully.
+39912 INFO: checking PKG
+39913 INFO: Building PKG because PKG-00.toc is non existent
+39913 INFO: Building PKG (CArchive) HeaterResistance.pkg
+57069 INFO: Building PKG (CArchive) HeaterResistance.pkg completed successfully.
+57099 INFO: Bootloader C:\Users\lorenzo\AppData\Roaming\Python\Python313\site-packages\PyInstaller\bootloader\Windows-64bit-intel\runw.exe
+57099 INFO: checking EXE
+57099 INFO: Building EXE because EXE-00.toc is non existent
+57099 INFO: Building EXE from EXE-00.toc
+57100 INFO: Copying bootloader EXE to C:\Users\lorenzo\Desktop\Python\GDS_heater\dist\HeaterResistance.exe
+57196 INFO: Copying icon to EXE
+57241 INFO: Copying 0 resources to EXE
+57241 INFO: Embedding manifest in EXE
+57288 INFO: Appending PKG archive to EXE
+57539 INFO: Fixing EXE headers
+58278 INFO: Building EXE from EXE-00.toc completed successfully.
+58308 INFO: Build complete! The results are available in: C:\Users\lorenzo\Desktop\Python\GDS_heater\dist

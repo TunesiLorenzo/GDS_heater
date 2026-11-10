@@ -10,6 +10,8 @@ Run:  python heater_app.py [layout.gds]
 3. Run: every device is solved on its own (its + at V, its - at 0 V, all other pads
    floating). The table under the layout lists the results per device; select a row
    to see its current-density map.
+4. Export circuit: save a resistor SPICE subcircuit with the heaters, routing,
+   and finite shared ground return. All configured devices are extracted together.
 
 Navigation: mouse wheel zooms at the cursor, left-drag pans (in Navigate mode),
 right- or middle-drag always pans.
@@ -36,6 +38,7 @@ import matplotlib.colors as mcolors
 import matplotlib.cm as cm
 
 import heater_core as hc
+import circuit_export as ce
 import layout_render as lr
 
 # equal-aspect axes re-adjust limits on every zoom; matplotlib logs that each time
@@ -138,6 +141,8 @@ class App:
         bar.pack(fill=tk.X, padx=6, pady=(4, 2))
         ttk.Label(bar, text="Results per device", font=("Segoe UI", 10, "bold")).pack(side=tk.LEFT)
         ttk.Button(bar, text="Save results…", command=self.export_csv).pack(side=tk.RIGHT)
+        self.circuit_btn = ttk.Button(bar, text="Export circuit…", command=self.export_circuit)
+        self.circuit_btn.pack(side=tk.RIGHT, padx=4)
         ttk.Button(bar, text="Copy table", command=self.copy_table).pack(side=tk.RIGHT, padx=4)
         self.table_info = tk.StringVar(value="Run the analysis to fill this table.")
         ttk.Label(bar, textvariable=self.table_info, foreground="#666").pack(side=tk.LEFT, padx=10)
@@ -851,9 +856,15 @@ class App:
             v = float(s)
         except ValueError:
             raise ValueError(f"{name}: '{s}' is not a number.")
-        if v <= 0:
-            raise ValueError(f"{name} must be positive.")
+        if not math.isfinite(v) or v <= 0:
+            raise ValueError(f"{name} must be finite and positive.")
         return v
+
+    def _set_busy(self, busy):
+        self.busy = busy
+        state = ["disabled"] if busy else ["!disabled"]
+        self.run_btn.state(state)
+        self.circuit_btn.state(state)
 
     def run(self):
         if self.busy:
@@ -905,8 +916,7 @@ class App:
             messagebox.showerror("Cannot run", "No device is ready to run. See the Note column in the table.")
             return
 
-        self.busy = True
-        self.run_btn.state(["disabled"])
+        self._set_busy(True)
 
         def work():
             for k, (name, plus, minus, g, heater, routing, via) in enumerate(jobs):
@@ -950,8 +960,7 @@ class App:
                     self.results[name] = out
                     self._refresh_table()
                 elif kind == "all_done":
-                    self.busy = False
-                    self.run_btn.state(["!disabled"])
+                    self._set_busy(False)
                     ok = [d["name"] for d in self.devices if not isinstance(self.results.get(d["name"]), (str, type(None)))]
                     n_err = len(self.devices) - len(ok)
                     self.prog_var.set(f"Done: {len(ok)} solved" + (f", {n_err} with errors" if n_err else "") + ".")
@@ -960,6 +969,17 @@ class App:
                     if pick:
                         self.table.selection_set(pick)
                         self.tabs.select(2)
+                elif kind == "circuit_done":
+                    self._set_busy(False)
+                    path, error, counts = payload
+                    if error:
+                        self.prog_var.set("Circuit export failed.")
+                        messagebox.showerror("Circuit export", error)
+                    else:
+                        devices, terminals = counts
+                        self.prog_var.set("Circuit exported.")
+                        self.table_info.set(f"Exported {devices} devices, {terminals} terminals.")
+                        self.status.set(f"Saved circuit to {path}")
         except queue.Empty:
             pass
         self.root.after(30, self._poll)
@@ -1040,6 +1060,62 @@ class App:
             w.writerow(head)
             w.writerows(rows)
         self.table_info.set(f"Saved {os.path.basename(path)}")
+
+    def export_circuit(self):
+        """Extract a fresh joint model; isolated table results are not sufficient."""
+        if self.busy:
+            return
+        if not self.layers:
+            messagebox.showinfo("Circuit export", "Open a GDS file first."); return
+        try:
+            if not self._role_keys("Heater"):
+                raise ValueError("Assign the role 'Heater' to at least one layer (Setup tab).")
+            if not self.devices:
+                raise ValueError("Add devices and set their + and − pads before exporting a circuit.")
+            missing = [d["name"] for d in self.devices if d.get("plus") is None or d.get("minus") is None]
+            if missing:
+                raise ValueError("Set both pads for every device before circuit export: " + ", ".join(missing))
+            rs_h = self._float("rs_h", "Heater sheet resistance")
+            rs_r = self._float("rs_r", "Routing sheet resistance")
+
+            def spacing(key):
+                return (None if self.params[key].get().strip().lower() in ("", "auto")
+                        else self._float(key, "Grid cell"))
+
+            hf, hmax = spacing("h"), spacing("hmax")
+        except ValueError as exc:
+            messagebox.showerror("Circuit export", str(exc)); return
+        path = filedialog.asksaveasfilename(
+            title="Export heater and shared-ground resistor circuit", defaultextension=".cir",
+            filetypes=[("Lumped resistor SPICE circuit", "*.cir")],
+            initialfile=os.path.splitext(self.file_var.get())[0] + "_circuit.cir")
+        if not path:
+            return
+        # Capture UI values on the Tk thread; the solver uses this snapshot.
+        layers = dict(self.layers)
+        roles = {key: var.get() for key, var in self.role_vars.items()}
+        devices = [{"name": d["name"], "plus": tuple(d["plus"]), "minus": tuple(d["minus"])}
+                   for d in self.devices]
+        region = self.region
+        source = {"gds_file": self.gds_path, "cell": self.cell_var.get()}
+        self._set_busy(True)
+        self.prog_var.set("Extracting the joint circuit…")
+
+        def work():
+            error, counts = None, None
+            try:
+                model = ce.build_circuit(layers, roles, devices, rs_heater=rs_h, rs_routing=rs_r,
+                                         region=region, h_fine=hf, h_coarse=hmax, source=source,
+                                         progress=lambda s: self.q.put(("progress", s)))
+                ce.write_circuit(model, path)
+                counts = (len(model["devices"]), len(model["terminal_order"]))
+            except MemoryError:
+                error = "Out of memory: use larger grid cells or export a smaller set of devices."
+            except Exception as exc:
+                error = str(exc)
+            self.q.put(("circuit_done", (path, error, counts)))
+
+        threading.Thread(target=work, daemon=True).start()
 
     def save_setup(self):
         if not self.gds_path:

@@ -1,0 +1,63 @@
+* Lumped MZI heater and shared-ground circuit; resistance in ohm.
+* One Rplus and one Rheater per MZI; shared-return groups reduced separately.
+* Approximation: each contiguous heater/routing contact is equipotential.
+* External sources connect positive ports and ground ports; no implicit ground.
+* mzi1: + t0, ground t12, heater nodes h_1 ret_1
+* mzi2: + t1, ground t12, heater nodes h_2 ret_2
+* mzi3: + t2, ground t12, heater nodes h_3 ret_3
+* mzi4: + t3, ground t13, heater nodes h_4 ret_4
+* mzi5: + t4, ground t13, heater nodes h_5 ret_5
+* mzi6: + t5, ground t14, heater nodes h_6 ret_6
+* mzi7: + t6, ground t14, heater nodes h_7 ret_7
+* mzi8: + t7, ground t15, heater nodes h_8 ret_8
+* mzi9: + t8, ground t15, heater nodes h_9 ret_9
+* mzi10: + t9, ground t16, heater nodes h_10 ret_10
+* mzi11: + t10, ground t16, heater nodes h_11 ret_11
+* mzi12: + t11, ground t16, heater nodes h_12 ret_12
+.subckt heater_circuit t0 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10 t11 t12 t13 t14 t15 t16
+Rplus_mzi1 t0 h_1 27.5748984828
+Rheater_mzi1 h_1 ret_1 121.4525
+Rplus_mzi2 t1 h_2 31.340119561
+Rheater_mzi2 h_2 ret_2 121.4525
+Rplus_mzi3 t2 h_3 35.0861776752
+Rheater_mzi3 h_3 ret_3 121.4525
+Rplus_mzi4 t3 h_4 22.1057571991
+Rheater_mzi4 h_4 ret_4 121.4525
+Rplus_mzi5 t4 h_5 23.9259583299
+Rheater_mzi5 h_5 ret_5 121.4525
+Rplus_mzi6 t5 h_6 20.6590042108
+Rheater_mzi6 h_6 ret_6 121.452516834
+Rplus_mzi7 t6 h_7 22.5918198763
+Rheater_mzi7 h_7 ret_7 121.452516834
+Rplus_mzi8 t7 h_8 20.9356121107
+Rheater_mzi8 h_8 ret_8 121.452483167
+Rplus_mzi9 t8 h_9 23.961542349
+Rheater_mzi9 h_9 ret_9 121.452483167
+Rplus_mzi10 t9 h_10 32.362538368
+Rheater_mzi10 h_10 ret_10 121.4525
+Rplus_mzi11 t10 h_11 36.1705060323
+Rheater_mzi11 h_11 ret_11 121.4525
+Rplus_mzi12 t11 h_12 40.1113055263
+Rheater_mzi12 h_12 ret_12 121.4525
+Rground_1_1 ret_1 ret_2 4.40083291612
+Rground_1_2 ret_1 ret_3 7.68211338754
+Rground_1_3 ret_1 t12 12.0951946645
+Rground_1_4 ret_2 ret_3 20.14146357
+Rground_1_5 ret_2 t12 33.5295831249
+Rground_1_6 ret_3 t12 55.3565979773
+Rground_2_1 ret_4 ret_5 4.5290937139
+Rground_2_2 ret_4 t13 9.026343048
+Rground_2_3 ret_5 t13 38.1107897936
+Rground_3_1 ret_6 ret_7 4.53324432143
+Rground_3_2 ret_6 t14 8.75127983256
+Rground_3_3 ret_7 t14 38.8484467369
+Rground_4_1 ret_8 ret_9 4.50833177045
+Rground_4_2 ret_8 t15 9.33948014461
+Rground_4_3 ret_9 t15 41.4406598363
+Rground_5_1 ret_10 ret_11 5.01674701568
+Rground_5_2 ret_10 ret_12 8.64812710505
+Rground_5_3 ret_10 t16 15.7940494361
+Rground_5_4 ret_11 ret_12 19.2594998563
+Rground_5_5 ret_11 t16 36.8609434611
+Rground_5_6 ret_12 t16 60.634010855
+.ends heater_circuit
